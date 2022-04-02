@@ -1,4 +1,4 @@
-# tinyrisc-improved-version
+# tinyrisc-improved-version项目进度与注意说明
 Tinyrisc's personal implementation version, and more RISC-V instruction sets will be added in the future. Some key points and implementation details that beginners need to pay attention to will also be added in readme.
 
 
