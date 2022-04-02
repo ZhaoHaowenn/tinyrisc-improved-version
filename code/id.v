@@ -69,13 +69,33 @@ module id(
 		op1_jump_o = `ZeroWord;
 		op2_jump_o = `ZeroWord;
 		
-		   case (opcode)
+		  case (opcode)
 		      `inst_type_I:
 				 begin
 				    case (funct4)
-					
-			    end
-		
+					   `inst_addi,`inst_slti,`inst_sltiu, `inst_xori, `inst_ori, `inst_andi, `inst_slli ,`inst_sri:
+			        
+				          regw_enable_o=`WriteEnable;
+						    regw_addr_o=rd;
+						    reg1_addr_o=rs1;
+						    reg2_addr_o=`ZeroReg;
+						 
+						    op1_o=reg1_rdata_i;  //get rs1 data
+						    op2_o = {{20{inst_i[31]}}, inst_i[31:20]}; //get immediate value
+		              end		
+					     default:begin
+					        regw_enable_o=`WriteDisable;
+							  regw_addr_o=`ZeroReg;
+							  reg1_addr_o=`ZeroReg;
+						     reg2_addr_o=`ZeroReg;
+					     end
+			        endcase
+		        end
+				  
+				  `inst_type_R: //I have some,R have some
+				  begin
+				     
+				  end
 	end
 	
 	
