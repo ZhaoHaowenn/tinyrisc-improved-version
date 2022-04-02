@@ -7,7 +7,7 @@ Tinyrisc's personal implementation version, and more RISC-V instruction sets wil
 2，熟悉RV32G指令集架构，明晰译码原理。<br>
 RV32I的全部指令如下，具体映射与指令格式可见pic文件夹中图片：<br>
 ![]
-(https://github.com/ZhaoHaowenn/tinyrisc-improved-version/blob/main/picforread/RV32I.png)
+(https://github.com/ZhaoHaowenn/tinyrisc-improved-version/raw/main/picforread/RV32I.png)
 
 //2022.4.2<br>
 1，写了部分译码模块（完成I类型指令编码）。<br>
