@@ -5,6 +5,9 @@ Tinyrisc's personal implementation version, and more RISC-V instruction sets wil
 //2022.3.12<br>
 1，写完取指模块，后续将加入静态分支预测等技术，构造标准取指级。<br>
 2，熟悉RV32G指令集架构，明晰译码原理。<br>
+RV32I的全部指令如下，具体映射与指令格式可见pic文件夹中图片：<br>
+![]
+(https://github.com/ZhaoHaowenn/tinyrisc-improved-version/blob/main/picforread/RV32I.png)
 
 //2022.4.2<br>
 1，写了部分译码模块（完成I类型指令编码）。<br>
