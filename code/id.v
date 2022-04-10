@@ -94,8 +94,100 @@ module id(
 				  
 				  `inst_type_R: //I have some,R have some
 				  begin
-				     
+				      if((funct1==7'b0000000)||(funct1==7'b0100000))
+					  begin
+					     case(funct4)
+						     `inst_add_sub,`inst_sll,`inst_slt,`inst_sltu,`inst_xor,`inst_sr,`inst_or,`inst_and:begin
+						     
+						     regw_enable_o=`WriteEnable;
+							  regw_addr_o=rd;
+							  reg1_addr_o=rs1;
+							  reg2_addr_o=rs2;
+							  
+							  op1_o=reg1_rdata_i;
+							  op2_o=reg2_rdata_i;
+						     end
+						  default:begin
+						     regw_enable_o=`WriteDisable;
+							  regw_addr_o=`ZeroReg;
+							  reg1_addr_o=`ZeroReg;
+							  reg2_addr_o=`ZeroReg;
+						     end
+						  endcase
+					  end 
 				  end
+			  
+			   `inst_type_L:
+				  begin
+				     case(funct4)
+					     `inst_lb,`inst_lh,`inst_lw,`inst_lbu,`inst_luh:begin
+						   
+							reg1_addr_o=rs1;
+							reg2_addr_o=`ZeroReg;
+							regw_enable_o=`WriteEnable;
+							regw_addr_o=rd;
+							
+							op1_o=reg1_rdata_i;
+							op2_o={{20{inst_i[31]}}, inst_i[31:20]};
+							end
+					  default:begin
+					     reg1_addr_o=`ZeroReg;
+						  reg2_addr_o=`ZeroReg;
+						  regw_enable_o=`WriteDisable;
+						  regw_addr_o=`ZeroReg;
+					     end
+					  endcase
+				  end
+				  
+				  `inst_type_S:
+				  begin
+				     case(funct4)
+					     `inst_sb,`inst_sh,`inst_sw:begin
+						  
+						  reg1_addr_o=rs1;
+						  reg2_addr_o=rs2;
+						  regW_enable_o=`WriteEnable;
+						  regw_addr_o=`ZeroReg;
+						  
+						  op1_o=reg1_rdata_i;
+						  op2_o = {{20{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
+						  end
+					  default:begin
+					     reg1_addr_o=`ZeroReg;
+						  reg2_addr_o=`ZeroReg;
+						  regw_enable_o=`WriteDisable;
+						  regw_addr_o=`ZeroReg;
+					     end
+				     endcase
+				  end
+				  
+				  `inst_type_B://change pc value
+				  begin
+				     case(funct4)
+					     `inst_beq,`inst_bne,`inst_blt,`inst_bge,`inst_bltu,`inst_bgeu:begin
+						   
+							reg1_addr_o=rs1;
+							reg2_addr_o=rs2;
+							regw_enable_o=`WriteDisable;
+							regw_addr_o=`ZeroReg;
+							
+							op1_o=reg1_rdata_i;
+							op2_o=reg2_rdata_i;
+							op1_jump_o=inst_addr_i;
+							op2_jump_o={{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};//??
+						  end
+					  default:begin
+					     reg1_addr_o=`ZeroReg;
+						  reg2_addr_o=`ZeroReg;
+						  regw_enable_o=`WriteDisable;
+						  regw_addr_o=`ZeroReg;
+					     end
+					  endcase
+				  end
+			  
+			  
+			  
+			  
 	end
 	
 	
