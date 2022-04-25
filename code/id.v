@@ -185,11 +185,97 @@ module id(
 					  endcase
 				  end
 			  
-			  
-			  
-			  
-	end
-	
+		                 `inst_type_csr:
+				  begin
+				     regw_enable_o=`WriteDisable;//inite state
+					  regw_addr_o=`ZeroReg;
+				     reg1_addr_o=`ZeroReg;
+					  reg2_addr_o=`ZeroReg;
+					  csrr_addr_o = {20'h0, inst_i[31:20]};//from instruction
+					  csrw_addr_o = {20'h0, inst_i[31:20]};
+				  
+				     case(funct4)
+				        `inst_csrrw,`inst_csrrs,`inst_csrrc:begin
+						   reg1_addr_o=rs1;
+							reg2_addr_o=`ZeroReg;
+							regw_enable_o=`WriteEnable;
+							regw_addr_o=rd;
+							csrw_enable_o=`WriteEnable;
+						   end
+				         
+							`inst_csrrwi,`inst_csrrsi,`inst_csrrci:begin
+							reg1_addr_o = `ZeroReg;
+                                                        reg2_addr_o = `ZeroReg;
+							regw_enable_o=`WriteEnable;
+							regw_addr_o=rd;
+							csrw_enable_o=`WriteEnable;
+							end
+							
+							default:begin
+							regw_enable_o=`WriteDisable;
+							regw_addr_o=`ZeroReg;
+							reg1_addr_o=`ZeroReg;
+							reg2_addr_o=`ZeroReg;
+							csrw_enable_o=`WriteDisable;
+							end
+				     endcase
+				  end
+				  
+				  `inst_fence://some question , how it works?
+				  begin
+				     regw_enable_o=`WriteDisable;
+					  regw_addr_o=`ZeroReg;
+					  reg1_addr_o=`ZeroReg;
+					  reg2_addr_o=`ZeroReg;
+					  
+					  op1_jump_o=inst_addr_i;
+					  op2_jump_o=32`h4;
+				  end
+					
+				 `inst_jal:
+				 begin
+				    regw_enable_o=`WriteEnable;
+					 regw_addr_o=rd;
+					 op1_jump_o=inst_addr_i;
+					 op2_jump_o = {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};//?
+				 end
+				
+				`inst_jalr:
+				begin
+				   regw_enable_o=`WriteEnable;
+					reg1_addr_o=rs1;
+					reg2_addr_o=`ZeroReg;
+					regw_addr_o=rd;
+					
+					op1_o=inst_addr_i;
+					op2_o=32`h4;//?
+					op1_jump_o=reg1_rdata_i;
+				   op2_jump_o = {{20{inst_i[31]}}, inst_i[31:20]};
+				end
+				
+				
+				`inst_lui:
+				begin
+				   regw_enable_o=`WriteEnable;
+					regw_addr_o=rd;
+					reg1_addr_o=`ZeroReg;
+					reg2_addr_o=`ZeroReg;
+					op1_o={inst_i[31:12], 12'b0};
+					op2_o=`ZeroWord;
+				end
+				
+				`inst_auipc:
+				begin
+				   regw_enable_o=`WriteEnable;
+					regw_addr_o=rd;
+					reg1_addr_o=`ZeroReg;
+					reg2_addr_o=`ZeroReg;
+					op1_o=inst_addr_i;
+					op2_o = {inst_i[31:12], 12'b0};
+				end
+				  endcase
+		end
+	endmodule
 	
 	
 	
