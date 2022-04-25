@@ -1,4 +1,4 @@
-`include "define.v"
+`include "defines.v"
 module id(
    input wire rst,
 	
@@ -17,8 +17,8 @@ module id(
 	input wire ex_jump_flag_i,
 	
 	//read reg 1 and 2 addr
-	output reg [4:0] regr1_addr_o,
-	output reg [4:0] regr2_addr_o,
+	output reg [4:0] reg1_addr_o,
+	output reg [4:0] reg2_addr_o,
 	
 	//read csr addr
 	output reg [31:0] csrr_addr_o,
@@ -39,9 +39,9 @@ module id(
 	output reg [31:0] csrw_addr_o,
 	
 	output reg[31:0] op1_o,
-        output reg[31:0] op2_o,
-        output reg[31:0] op1_jump_o,
-        output reg[31:0] op2_jump_o,
+   output reg[31:0] op2_o,
+   output reg[31:0] op1_jump_o,
+   output reg[31:0] op2_jump_o
 );
    //corrosponding
    wire [6:0] opcode = inst_i[6:0];
@@ -69,16 +69,16 @@ module id(
 		op1_jump_o = `ZeroWord;
 		op2_jump_o = `ZeroWord;
 		
-		  case (opcode)
+		   case (opcode)
 		      `inst_type_I:
 				 begin
 				    case (funct4)
 					   `inst_addi,`inst_slti,`inst_sltiu, `inst_xori, `inst_ori, `inst_andi, `inst_slli ,`inst_sri:begin
 			        
-				                    regw_enable_o=`WriteEnable;
-				                    regw_addr_o=rd;
-				                    reg1_addr_o=rs1;
-				                    reg2_addr_o=`ZeroReg;
+				          regw_enable_o=`WriteEnable;
+						    regw_addr_o=rd;
+						    reg1_addr_o=rs1;
+						    reg2_addr_o=`ZeroReg;
 						 
 						    op1_o=reg1_rdata_i;  //get rs1 data
 						    op2_o = {{20{inst_i[31]}}, inst_i[31:20]}; //get immediate value
@@ -94,7 +94,7 @@ module id(
 				  
 				  `inst_type_R: //I have some,R have some
 				  begin
-				      if((funct1==7'b0000000)||(funct1==7'b0100000))
+				     if((funct1==7'b0000000)||(funct1==7'b0100000))
 					  begin
 					     case(funct4)
 						     `inst_add_sub,`inst_sll,`inst_slt,`inst_sltu,`inst_xor,`inst_sr,`inst_or,`inst_and:begin
@@ -115,9 +115,10 @@ module id(
 						     end
 						  endcase
 					  end 
+					  //else if
 				  end
-			  
-			   `inst_type_L:
+				  
+				  `inst_type_L:
 				  begin
 				     case(funct4)
 					     `inst_lb,`inst_lh,`inst_lw,`inst_lbu,`inst_luh:begin
@@ -146,7 +147,7 @@ module id(
 						  
 						  reg1_addr_o=rs1;
 						  reg2_addr_o=rs2;
-						  regW_enable_o=`WriteEnable;
+						  regw_enable_o=`WriteDisable;
 						  regw_addr_o=`ZeroReg;
 						  
 						  op1_o=reg1_rdata_i;
@@ -184,8 +185,8 @@ module id(
 					     end
 					  endcase
 				  end
-			  
-		                 `inst_type_csr:
+				  
+				  `inst_type_csr:
 				  begin
 				     regw_enable_o=`WriteDisable;//inite state
 					  regw_addr_o=`ZeroReg;
@@ -205,7 +206,7 @@ module id(
 				         
 							`inst_csrrwi,`inst_csrrsi,`inst_csrrci:begin
 							reg1_addr_o = `ZeroReg;
-                                                        reg2_addr_o = `ZeroReg;
+                     reg2_addr_o = `ZeroReg;
 							regw_enable_o=`WriteEnable;
 							regw_addr_o=rd;
 							csrw_enable_o=`WriteEnable;
@@ -276,8 +277,6 @@ module id(
 				  endcase
 		end
 	endmodule
-	
-	
 	
 	
 	
