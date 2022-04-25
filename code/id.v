@@ -36,12 +36,12 @@ module id(
 	//to csr
 	output reg csrw_enable_o,
 	output reg [31:0] csrw_data_o,
-	output reg [31:0] csrw_addr_o
+	output reg [31:0] csrw_addr_o,
 	
 	output reg[31:0] op1_o,
-   output reg[31:0] op2_o,
-   output reg[31:0] op1_jump_o,
-   output reg[31:0] op2_jump_o,
+        output reg[31:0] op2_o,
+        output reg[31:0] op1_jump_o,
+        output reg[31:0] op2_jump_o,
 );
    //corrosponding
    wire [6:0] opcode = inst_i[6:0];
@@ -73,12 +73,12 @@ module id(
 		      `inst_type_I:
 				 begin
 				    case (funct4)
-					   `inst_addi,`inst_slti,`inst_sltiu, `inst_xori, `inst_ori, `inst_andi, `inst_slli ,`inst_sri:
+					   `inst_addi,`inst_slti,`inst_sltiu, `inst_xori, `inst_ori, `inst_andi, `inst_slli ,`inst_sri:begin
 			        
-				          regw_enable_o=`WriteEnable;
-						    regw_addr_o=rd;
-						    reg1_addr_o=rs1;
-						    reg2_addr_o=`ZeroReg;
+				                    regw_enable_o=`WriteEnable;
+				                    regw_addr_o=rd;
+				                    reg1_addr_o=rs1;
+				                    reg2_addr_o=`ZeroReg;
 						 
 						    op1_o=reg1_rdata_i;  //get rs1 data
 						    op2_o = {{20{inst_i[31]}}, inst_i[31:20]}; //get immediate value
